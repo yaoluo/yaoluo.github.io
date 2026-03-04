@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yao Luo — Applied Physics, Caltech</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf9f7;
+      --surface: #f3f1ed;
+      --border: #e0ddd7;
+      --text: #1a1917;
+      --muted: #6b6860;
+      --accent: #2a5298;
+      --accent-light: #eef2fb;
+      --mono: 'DM Mono', 'Courier New', monospace;
+      --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --sidebar-width: 300px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── SIDEBAR NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--sidebar-width);
+      height: 100vh;
+      z-index: 100;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 3rem 2rem;
+      overflow-y: auto;
+    }
+
+    .nav-name {
+      font-family: var(--sans);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      text-decoration: none;
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+
+    .nav-subtitle {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 3rem;
+      line-height: 1.6;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.45rem 0;
+      border-left: 2px solid transparent;
+      padding-left: 0.75rem;
+      margin-left: -0.75rem;
+      transition: color 0.2s, border-color 0.2s;
+      display: block;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+
+    .nav-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2rem 0 1.5rem;
+    }
+
+    .nav-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 0;
+    }
+
+    .nav-contact-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .nav-contact-label {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .nav-contact-val {
+      font-size: 0.75rem;
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    .nav-contact-val a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-contact-val a:hover { text-decoration: underline; }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      margin-left: var(--sidebar-width);
+      max-width: 1100px;
+      padding: 0 4rem;
+    }
+
+    section {
+      padding: 5rem 0;
+      border-bottom: 1px solid var(--border);
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    section.animate-hidden {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    section.animate-hidden.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.975rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-label::after {
+      content: '';
+      display: block;
+      height: 1px;
+      flex: 1;
+      background: var(--border);
+    }
+
+    /* ── HERO ── */
+    #about {
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      gap: 5rem;
+      align-items: start;
+      padding-top: 5rem;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(2rem, 3vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+
+    .hero-subtitle {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .hero-bio {
+      font-size: 0.975rem;
+      color: #3a3835;
+      margin-bottom: 1.5rem;
+      line-height: 1.8;
+      max-width: 700px;
+    }
+
+    .hero-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 2rem;
+    }
+
+    .hero-links a {
+      font-family: var(--mono);
+      font-size: 0.67rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 0.4rem 0.9rem;
+      border: 1px solid var(--accent);
+      border-radius: 2px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .hero-links a:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .hero-photo {
+      width: 200px;
+      height: 240px;
+      border-radius: 4px;
+      object-fit: cover;
+      filter: grayscale(10%);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .photo-placeholder {
+      width: 200px;
+      height: 240px;
+      border-radius: 4px;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      text-align: center;
+      letter-spacing: 0.06em;
+      line-height: 1.6;
+      padding: 1rem;
+    }
+
+    /* ── RESEARCH ── */
+    .research-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+
+    .research-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .research-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .research-card h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .research-card p {
+      font-size: 0.855rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .pub-cite {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+
+    .pub-cite a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .pub-cite a:hover { text-decoration: underline; }
+
+    /* ── PUBLICATIONS ── */
+    .pub-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pub-item {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 2.2rem 1fr;
+      gap: 0 1.25rem;
+      align-items: baseline;
+    }
+
+    .pub-item:last-child { border-bottom: none; }
+
+    .pub-num {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      padding-top: 0.15rem;
+      text-align: right;
+    }
+
+    .pub-content {}
+
+    .pub-title {
+      font-size: 0.94rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 0.3rem;
+      color: var(--text);
+    }
+
+    .pub-title a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .pub-title a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .pub-authors {
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 0.3rem;
+    }
+
+    .pub-authors strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .pub-venue {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--accent);
+    }
+
+    .pub-doi {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--accent);
+    }
+
+    .pub-doi:hover {
+      border-bottom-style: solid;
+    }
+
+    .pub-note {
+      display: inline-block;
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: #999;
+      margin-top: 0.35rem;
+    }
+
+    .pub-note a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .pub-note a:hover { text-decoration: underline; }
+
+    /* ── TEACHING ── */
+    .teaching-block {
+      margin-bottom: 2.5rem;
+    }
+
+    .teaching-block h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .teaching-item {
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
+
+    .teaching-item:last-child { border-bottom: none; }
+
+    .teaching-desc {
+      font-size: 0.9rem;
+    }
+
+    .teaching-meta {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+
+    .mentee-list {
+      margin-top: 0.5rem;
+      padding-left: 1.2rem;
+    }
+
+    .mentee-list li {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+      list-style: none;
+      padding-left: 0;
+      position: relative;
+    }
+
+    .mentee-list li::before {
+      content: '—';
+      margin-right: 0.5rem;
+      color: var(--border);
+    }
+
+    /* ── TALKS ── */
+    .talks-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .talk-item {
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 3.5rem 1fr;
+      gap: 0 1.25rem;
+    }
+
+    .talk-item:last-child { border-bottom: none; }
+
+    .talk-year {
+      font-family: var(--mono);
+      font-size: 0.67rem;
+      color: var(--muted);
+      padding-top: 0.15rem;
+    }
+
+    .talk-title {
+      font-size: 0.925rem;
+      font-weight: 500;
+      line-height: 1.4;
+      margin-bottom: 0.2rem;
+    }
+
+    .talk-venue {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── CONTACT ── */
+    #contact .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .contact-intro {
+      font-size: 0.975rem;
+      color: #3a3835;
+      line-height: 1.8;
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .contact-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: baseline;
+    }
+
+    .contact-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      width: 4rem;
+      flex-shrink: 0;
+    }
+
+    .contact-val {
+      font-size: 0.875rem;
+    }
+
+    .contact-val a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .contact-val a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-left: var(--sidebar-width);
+      max-width: 1100px;
+      padding: 2rem 4rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav {
+        position: static;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        height: 56px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-subtitle { display: none; }
+      .nav-links { flex-direction: row; gap: 1.2rem; margin-bottom: 0; }
+      .nav-links a { padding: 0; border-left: none; margin-left: 0; padding-bottom: 2px; border-bottom: 2px solid transparent; }
+      .nav-links a:hover, .nav-links a.active { border-left: none; border-bottom-color: var(--accent); }
+      main { margin-left: 0; padding: 0 1.5rem; }
+      footer { margin-left: 0; padding: 2rem 1.5rem; }
+      #about { grid-template-columns: 1fr; }
+      .hero-photo, .photo-placeholder { width: 140px; height: 170px; }
+    }
+
+    @media (max-width: 600px) {
+      .research-grid { grid-template-columns: 1fr; }
+      #contact .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .nav-links { gap: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR NAV -->
+  <nav>
+    <a href="#about" class="nav-name">Yao Luo's Website</a>
+    <div class="nav-subtitle">Applied Physics<br>Caltech</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#publications">Publications</a></li>
+      <li><a href="#teaching">Teaching</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <hr class="nav-divider">
+    <div class="nav-contact">
+      <div class="nav-contact-row">
+        <span class="nav-contact-label">Email</span>
+        <span class="nav-contact-val"><a href="mailto:yluo7@caltech.edu">yluo7@caltech.edu</a></span>
+        <span class="nav-contact-val"><a href="mailto:luoyaonju@gmail.com">luoyaonju@gmail.com</a></span>
+      </div>
+      <div class="nav-contact-row">
+        <span class="nav-contact-label">Phone</span>
+        <span class="nav-contact-val">626-354-1294</span>
+      </div>
+      <div class="nav-contact-row">
+        <span class="nav-contact-label">Address</span>
+        <span class="nav-contact-val">MC 107-81, 1200 E California Blvd<br>Pasadena, CA 91125</span>
+      </div>
+      <div class="nav-contact-row">
+        <span class="nav-contact-label">Google Scholar</span>
+        <span class="nav-contact-val"><a href="https://scholar.google.com/citations?user=Lf6zBg0AAAAJ" target="_blank">Profile ↗</a></span>
+      </div>
+      <div class="nav-contact-row">
+        <span class="nav-contact-label">GitHub</span>
+        <span class="nav-contact-val"><a href="#" title="Add your GitHub URL">—</a></span>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="hero-text">
+        <div class="section-label">About</div>
+        <h1>Yao Luo</h1>
+        <p class="hero-subtitle">Ph.D. Candidate · Applied Physics · Caltech</p>
+        <p class="hero-bio">
+          I am a Ph.D. candidate in Applied Physics at the California Institute of Technology, advised by 
+          <a href="http://bernardi.caltech.edu/people/index.html" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent);">Prof. Marco Bernardi</a>. 
+          I received my B.S. in Physics from Nanjing University in 2020, graduating with honors.
+        </p>
+        <p class="hero-bio">
+          My research sits at the intersection of computational physics, quantum many-body theory, and materials science. 
+          I develop first-principles methods to study quantum interactions in materials — including electron–phonon coupling, 
+          polaron physics, and anharmonic phonon interactions — and leverage machine learning and data-driven techniques 
+          to make these calculations more efficient and scalable. Recent highlights include a first-principles diagrammatic 
+          Monte Carlo approach for polarons and a tensor learning framework for compressing many-phonon interactions. 
+          I am a recipient of the 2024 Eddleman Graduate Fellowship.
+        </p>
+        <p class="hero-bio">
+          My broader interest is to develop rigorous computational methods that unlock new physical observables and deepen our understanding of many-body quantum interactions in materials.
+        </p>
+      </div>
+      <img src="photo.jpg" alt="Yao Luo" class="hero-photo" id="profile-photo-container" />
+    </section>
+
+    <!-- RESEARCH -->
+    <section id="research">
+      <div class="section-label">Research</div>
+      <div class="research-grid">
+        <div class="research-card">
+          <h3>Polarons & Strong Coupling</h3>
+          <p>Polarons — electrons dressed by lattice distortions — govern charge transport and optical properties in a wide class of materials, from complex oxides to halide perovskites. I develop first-principles diagrammatic Monte Carlo methods that sum Feynman diagrams to high order, enabling quantitatively accurate simulations of polaron formation, spectral functions, and mobility without empirical parameters <span class="pub-cite"><a href="https://doi.org/10.1038/s41567-025-02954-1" target="_blank">[3]</a></span>. Looking ahead, I aim to extend these approaches to nonequilibrium and finite-temperature regimes. This work opens pathways to predict and design materials with tailored polaronic properties. This research was featured on <a href="https://www.caltech.edu/about/news/adding-up-feynman-diagrams-to-make-predictions-about-real-materials" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dotted var(--accent);">Caltech News ↗</a>.</p>
+        </div>
+        <div class="research-card">
+          <h3>Data-Driven Compression of Quantum Interactions</h3>
+          <p>First-principles calculations of quantum interactions — such as electron–phonon and phonon–phonon couplings — produce massive tensors that pose severe computational bottlenecks. I develop tensor learning and machine learning techniques to compress these interaction matrices by orders of magnitude while preserving full physical accuracy, making large-scale and high-order calculations tractable for realistic materials <span class="pub-cite"><a href="https://doi.org/10.1103/nmgj-yq1g" target="_blank">[2]</a>, <a href="https://doi.org/10.1103/PhysRevX.14.021023" target="_blank">[4]</a></span>. The long-term vision is a general framework that autonomously learns compact representations of any quantum interaction, dramatically accelerating the discovery of new materials and physical phenomena. This research was featured on Caltech News: <a href="https://www.caltech.edu/about/news/new-ai-technique-unravels-quantum-atomic-vibrations-in-materials" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dotted var(--accent);">New AI Technique Unravels Quantum Atomic Vibrations ↗</a> and <a href="https://www.caltech.edu/about/news/speeding-up-calculations-that-reveal-how-electrons-interact-in-materials" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px dotted var(--accent);">Speeding Up Calculations That Reveal How Electrons Interact ↗</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PUBLICATIONS -->
+    <section id="publications">
+      <div class="section-label">Selected Publications</div>
+      <div class="pub-list">
+
+        <div class="pub-item">
+          <span class="pub-num">[1]</span>
+          <div class="pub-content">
+            <p class="pub-title"><a href="https://doi.org/10.1088/1361-6633/ae3c3e" target="_blank">Understanding polaronic transport in complex oxides by combining precise synthesis and first-principles many-body theory</a></p>
+            <p class="pub-authors">F. Liu*, Z. Yang*, <strong>Y. Luo*</strong>, S. Guo, C. Zhang, S. Choo, X. Xu, S. G. Jeong, J. S. Kumar, X. Wang, A. Mkhoyan, M. Bernardi &amp; B. Jalan <em>(* equal contribution)</em></p>
+            <p class="pub-venue"><a href="https://doi.org/10.1088/1361-6633/ae3c3e" target="_blank" class="pub-doi">Rep. Prog. Phys. 2026 · 89, 028003</a></p>
+          </div>
+        </div>
+
+        <div class="pub-item">
+          <span class="pub-num">[2]</span>
+          <div class="pub-content">
+            <p class="pub-title"><a href="https://doi.org/10.1103/nmgj-yq1g" target="_blank">Tensor Learning and Compression of N-Phonon Interactions</a></p>
+            <p class="pub-authors"><strong>Y. Luo</strong>, D. Mangtani, S. Peng, J. Yao, S. Kliavinek &amp; M. Bernardi</p>
+            <p class="pub-venue"><a href="https://doi.org/10.1103/nmgj-yq1g" target="_blank" class="pub-doi">Phys. Rev. Lett. 2025 · 135, 126101</a></p>
+            <span class="pub-note"><a href="https://www.caltech.edu/about/news/new-ai-technique-unravels-quantum-atomic-vibrations-in-materials" target="_blank">Caltech News ↗</a></span>
+          </div>
+        </div>
+
+        <div class="pub-item">
+          <span class="pub-num">[3]</span>
+          <div class="pub-content">
+            <p class="pub-title"><a href="https://doi.org/10.1038/s41567-025-02954-1" target="_blank">First-principles diagrammatic Monte Carlo for electron–phonon interactions and polaron</a></p>
+            <p class="pub-authors"><strong>Y. Luo</strong>, J. Park &amp; M. Bernardi</p>
+            <p class="pub-venue"><a href="https://doi.org/10.1038/s41567-025-02954-1" target="_blank" class="pub-doi">Nature Physics 2025 · 21, 1275–1282</a></p>
+            <span class="pub-note"><a href="https://www.caltech.edu/about/news/adding-up-feynman-diagrams-to-make-predictions-about-real-materials" target="_blank">Caltech News ↗</a> &nbsp;·&nbsp; <a href="https://physicsworld.com/a/feynman-diagrams-provide-insight-into-quasiparticles-in-solids/" target="_blank">Physics World ↗</a></span>
+          </div>
+        </div>
+
+        <div class="pub-item">
+          <span class="pub-num">[4]</span>
+          <div class="pub-content">
+            <p class="pub-title"><a href="https://doi.org/10.1103/PhysRevX.14.021023" target="_blank">Data-Driven Compression of Electron-Phonon Interactions</a></p>
+            <p class="pub-authors"><strong>Y. Luo</strong>, D. Desai, B. K. Chang, J. Park &amp; M. Bernardi</p>
+            <p class="pub-venue"><a href="https://doi.org/10.1103/PhysRevX.14.021023" target="_blank" class="pub-doi">Physical Review X 2024 · 14, 021023</a></p>
+            <span class="pub-note"><a href="https://www.caltech.edu/about/news/speeding-up-calculations-that-reveal-how-electrons-interact-in-materials" target="_blank">Caltech News ↗</a></span>
+          </div>
+        </div>
+
+        <div class="pub-item">
+          <span class="pub-num">[5]</span>
+          <div class="pub-content">
+            <p class="pub-title"><a href="https://doi.org/10.1103/PhysRevB.105.155132" target="_blank">Comparison of the canonical transformation and energy functional formalisms for ab initio calculations of self-localized polarons</a></p>
+            <p class="pub-authors"><strong>Y. Luo</strong>, B. K. Chang &amp; M. Bernardi</p>
+            <p class="pub-venue"><a href="https://doi.org/10.1103/PhysRevB.105.155132" target="_blank" class="pub-doi">Physical Review B 2022 · 105, 155132</a></p>
+          </div>
+        </div>
+
+        <div class="pub-item">
+          <span class="pub-num">[6]</span>
+          <div class="pub-content">
+            <p class="pub-title"><a href="https://doi.org/10.1103/489b-n5pd" target="_blank">Magnon-phonon interactions from first principles</a></p>
+            <p class="pub-authors">K. B. Le, A. Esquembre-Kucukalic, H.-Y. Chen, I. Maliyov, <strong>Y. Luo</strong>, J.-J. Zhou, D. Sangalli, A. Molina-Sánchez &amp; M. Bernardi</p>
+            <p class="pub-venue"><a href="https://doi.org/10.1103/489b-n5pd" target="_blank" class="pub-doi">Phys. Rev. B 2025 · 112, L180403</a></p>
+          </div>
+        </div>
+
+        <div class="pub-item">
+          <span class="pub-num">[7]</span>
+          <div class="pub-content">
+            <p class="pub-title"><a href="https://doi.org/10.1103/PhysRevMaterials.8.L051001" target="_blank">First-principles electron-phonon interactions and electronic transport in large-angle twisted bilayer graphene</a></p>
+            <p class="pub-authors">S. Gao, J.-J. Zhou, <strong>Y. Luo</strong> &amp; M. Bernardi</p>
+            <p class="pub-venue"><a href="https://doi.org/10.1103/PhysRevMaterials.8.L051001" target="_blank" class="pub-doi">Physical Review Materials 2024 · 8, L051001</a></p>
+          </div>
+        </div>
+
+        <div class="pub-item">
+          <span class="pub-num">[8]</span>
+          <div class="pub-content">
+            <p class="pub-title"><a href="https://doi.org/10.1103/PhysRevLett.129.197201" target="_blank">Predicting Phonon-Induced Spin Decoherence from First Principles: Colossal Spin Renormalization in Condensed Matter</a></p>
+            <p class="pub-authors">J. Park, J.-J. Zhou, <strong>Y. Luo</strong> &amp; M. Bernardi</p>
+            <p class="pub-venue"><a href="https://doi.org/10.1103/PhysRevLett.129.197201" target="_blank" class="pub-doi">Physical Review Letters 2022 · 129, 197201</a></p>
+            <span class="pub-note"><a href="https://www.caltech.edu/about/news/new-theory-of-electron-spin-to-aid-quantum-devices" target="_blank">Caltech News ↗</a></span>
+          </div>
+        </div>
+
+        <div class="pub-item">
+          <span class="pub-num">[9]</span>
+          <div class="pub-content">
+            <p class="pub-title"><a href="https://doi.org/10.1103/PhysRevB.106.174404" target="_blank">Many-body theory of phonon-induced spin relaxation and decoherence</a></p>
+            <p class="pub-authors">J. Park, <strong>Y. Luo</strong>, J.-J. Zhou &amp; M. Bernardi</p>
+            <p class="pub-venue"><a href="https://doi.org/10.1103/PhysRevB.106.174404" target="_blank" class="pub-doi">Physical Review B 2022 · 106, 174404</a></p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TEACHING -->
+    <section id="teaching">
+      <div class="section-label">Teaching &amp; Mentoring</div>
+
+      <div class="teaching-block">
+        <h3>Teaching</h3>
+        <div class="teaching-item">
+          <span class="teaching-desc">Teaching Assistant — Structure and Bonding in Materials (MS 131), Caltech</span>
+          <span class="teaching-meta">Fall 2025</span>
+        </div>
+      </div>
+
+      <div class="teaching-block">
+        <h3>Undergraduate Mentoring</h3>
+        <div class="teaching-item" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
+          <div style="display:flex; justify-content: space-between; width: 100%;">
+            <span class="teaching-desc">Caltech SURF Intern Supervisor</span>
+            <span class="teaching-meta">Summer 2024</span>
+          </div>
+          <ul class="mentee-list">
+            <li><strong>Dhruv Mangtani</strong> — Data-driven compression of phonon–phonon interactions</li>
+            <li><strong>Alex Roger</strong> — Spin relaxation in the polaron region using diagrammatic quantum Monte Carlo</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="section-label">Contact</div>
+      <div class="contact-grid">
+        <p class="contact-intro">
+          I'm always happy to discuss research, collaborations, or questions about my work.
+          Feel free to reach out by email.
+        </p>
+        <div class="contact-details">
+          <div class="contact-row">
+            <span class="contact-label">Email</span>
+            <span class="contact-val"><a href="mailto:yluo7@caltech.edu">yluo7@caltech.edu</a></span>
+          </div>
+          <div class="contact-row">
+            <span class="contact-label"></span>
+            <span class="contact-val"><a href="mailto:luoyaonju@gmail.com">luoyaonju@gmail.com</a></span>
+          </div>
+          <div class="contact-row">
+            <span class="contact-label">Phone</span>
+            <span class="contact-val">626-354-1294</span>
+          </div>
+          <div class="contact-row">
+            <span class="contact-label">Address</span>
+            <span class="contact-val">MC 107-81, 1200 E California Blvd<br>Pasadena, CA 91125</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>© 2026 Yao Luo</span>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Scroll-based fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.05 });
+
+    document.querySelectorAll('section').forEach(s => {
+      s.classList.add('animate-hidden');
+      observer.observe(s);
+    });
+
+    // Active nav highlight
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+
+    const navObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navLinks.forEach(a => a.classList.remove('active'));
+          const link = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { threshold: 0.3 });
+
+    sections.forEach(s => navObs.observe(s));
+
+      </script>
+</body>
+</html>
